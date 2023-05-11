@@ -13,3 +13,6 @@ Easiest way to insert the component is though Roam's native template menu. Simpl
 
 <img src="https://github.com/8bitgentleman/roam-depot-tidy-todos/raw/main/template.png" max-width="400"></img>
 
+## Dev Testing
+Load up the latest alpha commit using this URL
+[https://8bitgentleman.github.io/roam-depot-tidy-todos/](https://8bitgentleman.github.io/roam-depot-tidy-todos/)
