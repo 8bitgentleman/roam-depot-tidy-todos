@@ -1,5 +1,4 @@
 import { toggleRenderComponent } from "./entry-helpers";
-import { toggleStrikethroughCSS } from "./entry-helpers";
 
 const codeBlockUID = 'roam-render-todo-progress-cljs';
 const cssBlockUID = 'roam-render-todo-progress-css';
@@ -18,7 +17,7 @@ function onload({extensionAPI}) {
           description: "Adds CSS to strike through DONE tasks",
           action:	  {type:	 "switch",
                         onChange: (evt) => { 
-                          toggleStrikethroughCSS(evt.target.checked); 
+                          // toggleStrikethroughCSS(evt.target.checked); 
                           console.log("toggle strikethrough CSS!", evt.target.checked); }}}
     ]
   };

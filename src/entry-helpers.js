@@ -1,6 +1,5 @@
 import componentCSSFile from "./component.css";
 import clsjFile from "./component.cljs";
-import strikethroughCSSFile from "./strikethrough.css";
 
 function removeCodeBlock(uid){
     roamAlphaAPI.deleteBlock({"block":{"uid": uid}})
@@ -155,15 +154,6 @@ function replaceRenderString(renderString, replacementString){
     });
 }
 
-export function toggleStrikethroughCSS(state) {
-    let codeBlockParentUID = 'strikethrough-css-parent';
-    let codeBlockUID = 'strikethrough-css';
-    if (state==true) {
-        createCSSBlock(codeBlockParentUID, codeBlockUID, strikethroughCSSFile, 'DONE Task Strikethrough STYLE');
-    } else if(state==false){
-        removeCodeBlock(codeBlockParentUID)
-    }
-}
 
 export function toggleRenderComponent(state, titleblockUID, cssBlockParentUID, version, renderString, replacementString, cssBlockUID, codeBlockUID) {
     let renderPageName = 'roam/render'
