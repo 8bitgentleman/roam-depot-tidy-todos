@@ -1,42 +1,32 @@
-:root{
-  --progress-bar-default:#137cbd;
-  --progress-bar:#137cbd;
-  --progress-border:#B6B6B6;
-  --progress-bg:#dfe2e5;
-}
-:root .rm-dark-theme {
-  --progress-border:#137cbd;
-  --progress-bg:#EFEFEF;
-}
-/* THIS CODEBLOCK IS OVERWRITTEN ON EVERY VERSION UPDATE
-DO NOT MODIFY*/
-progress[name="percent-done"],
-.todo-progress-bar progress{
-  display:inline-block;
-  height:6px;
-  background:none;
-  border-radius: 15px;
-  margin-bottom:2px;
-}
-  
-progress::-webkit-progress-bar,
-.todo-progress-bar progress::-webkit-progress-bar{
-  height:6px;
-  background-color: var(--progress-bg);
-  border-radius: 15px;
+span.rm-page-ref[data-tag="tidy"], span.rm-page-ref[data-tag="tidy"] {
+  background: none;
+  border-radius: 10px;
+  padding: 1px 10px 1px 10px;
+  zoom: 80%;
+  color:#5c7080 !important;
+  border: 1px solid #5c7080 !important;
+  margin: 0 4px !important;
 }
 
-.rm-dark-theme progress::-webkit-progress-bar,
-.rm-dark-theme .todo-progress-bar progress::-webkit-progress-bar{
-box-shadow:0px 0px 6px var(--progress-border) inset;
+.tidyButton{
+  margin:0 5px 0 -2px !important
 }
 
-progress::-webkit-progress-value,
-.todo-progress-bar progress::-webkit-progress-value{
-  display:inline-block;
-  float:left;
-  height:6px;
-  margin:0px -10px 0 0;
-  background: var(--progress-bar);
-  border-radius: 5px;
+.tidyRemoveButton {
+  margin-left: -8px !important;
+  margin-top: -2px !important;
+}
+
+.tidyButton:hover,  .tidyRemoveButton:hover{
+  background: transparent !important;
+}
+
+.tidyButton span, .tidyRemoveButton span {
+  padding-left: -2px !important;
+}
+
+.tidyButton svg, .tidyRemoveButton svg {
+  width: 14px !important;
+  height: 14px !important;
+  opacity: 0.8 !important;
 }

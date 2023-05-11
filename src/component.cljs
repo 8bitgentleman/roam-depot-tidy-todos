@@ -1,95 +1,128 @@
-(ns progress-bar-v11
+(ns tidy-todo-v8
   (:require
    [reagent.core :as r]
+   [roam.block :as block]
    [datascript.core :as d]
    [roam.datascript.reactive :as dr]
-   [clojure.pprint :as pp]))
+   [clojure.string :as str]
+   [clojure.pprint :refer [pprint]]
+   [promesa.core :as p]
+   [roam.util :refer [parse]]
+   [blueprintjs.core :as bp]
+   [roam.datascript :as rd]
+   ))
 
 ; THIS CODEBLOCK IS OVERWRITTEN ON EVERY VERSION UPDATE
 ; DO NOT MODIFY
 
-(defn flatten-block 
-  "Flattens a blocks children into a flat list"
-  [acc block]
-  (reduce flatten-block
-          (conj acc (dissoc block :block/children))
-          (:block/children block)))
+(defonce bp-button (r/adapt-react-class bp/Button))
 
-(defn find-child-refs
-  "Returns all _refs for children blocks given a parent block uid"
-  [block-uid]
-  (flatten-block []
-             @(dr/q '[:find (pull ?e [:block/refs{:block/children ...}]) .
-                      :in $ ?uid
-                      :where
-                      [?e :block/uid ?uid]]
-                    block-uid)))
+(defn find-blocks-that-ref
+  "Returns all _refs for each children block given a parent block uid" 
+  [block-uid ref-title]
+  (dr/q '[:find (pull ?node [:block/string :block/uid])
+          :in $ ?uid ?ref-page-name
+          :where
+          [?e :block/uid ?uid]
+          [?e :block/children ?node]
+          [?node :block/refs ?DONE-Ref]
+          [?DONE-Ref :node/title ?ref-page-name]]
+    block-uid ref-title))
 
-(defn id-title 
-  "Gets a page's title from its db id"
-  [id]
-  (:node/title @(dr/pull '[:node/title] id))
-  )
+(defn get-string [item]
+  (:block/string (first item)))
 
-(defn info-from-id [id]
-  	(or (:node/title @(dr/pull '[:node/title] id))
-      (map
-       id-title 
-       (map 
-       		:db/id
-       		(:block/refs @(dr/pull '[:block/refs] id))
-       ))
+(defn sort-by-string [data]
+  (sort-by #(str/lower-case (get-string %)) data))
+
+(defn move-to-end [parent-uid item]
+  (block/move
+    {:location {:parent-uid parent-uid
+                :order "last"}
+     :block {:uid (:block/uid (first item))}}))
+
+(defn sort-all-todos[parent-uid]
+  
+  (r/with-let [
+               TODOs (find-blocks-that-ref parent-uid "TODO")
+               DONEs (find-blocks-that-ref parent-uid "DONE")
+               ARCHIVEDs (find-blocks-that-ref parent-uid "ARCHIVED")
+              ]
+    (p/run!
+      (fn [item]
+        (prn (first item))
+        (block/move
+          {:location {:parent-uid parent-uid
+                      :order "last"}
+           :block {:uid (:block/uid (first item))}}))
+      (concat
+        @TODOs
+        (sort-by-string @DONEs)
+        (sort-by-string @ARCHIVEDs)
+        )
       )
+    )
   )
 
-(defn count-occurrences 
-  "Counts the occurances of a string in a list"
-  [s slist]
-  (->> slist
-       flatten
-       (filter #{s})
-       count))
+;; functions for removing the tidy
+(defn clean-tidy-string [input-string]
+  (let [pattern #"\{\{\[\[roam/render\]\]\:.*?\}\}"
+        cleaned-string (clojure.string/replace input-string pattern "")]
+    cleaned-string))
 
+(defn get-block-string [uid]
+  (:block/string (rd/pull 
+      '[:block/string 
+        ] 
+      [:block/uid uid]))
+)
 
-(defn recurse-search
-  "Recursivly search through a block's children for all pages referenced"
-  [block-uid]
+(defn update-block-string
+  [block-uid block-string]
+  (block/update 
+      {:block {:uid block-uid 
+               :string block-string}})
+  )
+
+(defn remove-tidy [block-uid]
   (->> block-uid
-       (find-child-refs)
-       (map :block/refs)
-       (flatten)
-       (map :db/id)
-       (map  info-from-id)
-       (flatten)))
+    (get-block-string )
+    (clean-tidy-string)
+    (update-block-string block-uid)
+    )
+  )
 
+  (defn button [block-uid]
+    [bp-button 
+        {:small true
+         :outlined false
+         :minimal true
+         :icon "sort"
+         :class "tidyButton"
+         :style{ :margin-right "4px"}
+         :title "Click to tidy this list"
+         :on-click (fn [e]
+                     (sort-all-todos block-uid))
+       }]
+)
+(defn delete-button [block-uid]
+    [bp-button 
+        {:small true
+         :outlined false
+         :minimal true
+         :icon "small-cross"
+         :class "tidyRemoveButton"
+         :style{ :margin-right "4px"}
+         :title "Remove the tidy component"
+         :on-click (fn [e]
+                     (remove-tidy block-uid))
+       }]
+)
 
 (defn main [{:keys [block-uid]} & args]
-  (let [tasks (r/atom {;; don't love that I do this search twice
-                       :todo (count-occurrences "TODO" (recurse-search block-uid))
-                       :done (count-occurrences "DONE" (recurse-search block-uid))} )]
-    
-      [:div
-             [:div {:style {:display "flex"
-                                 :align-items "center"}
-                         }
-                   [:span [:progress {
-                      :id "file"
-                      :name "percent-done"
-                      :value (:done @tasks)
-                      :max (+ (:todo @tasks) (:done @tasks))
-                      :style{
-
-                             :margin-left "10px"
-                             :margin-right "10px"
-                             }}]
-                    ]
-                    [:span [:div  (str (:done @tasks)  "/"
-                                      (+ 
-                                        (:done @tasks)
-                                        (:todo @tasks))
-                                    " Done"
-                                    )]]
-
-                   ]
-           ]
-  ))
+    [:div
+       (parse (str "#[[" (first args) "]]")) 
+        [button block-uid]
+        [delete-button block-uid]
+        ]
+    )

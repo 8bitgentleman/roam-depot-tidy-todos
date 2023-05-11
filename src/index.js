@@ -1,24 +1,25 @@
 import { toggleRenderComponent } from "./entry-helpers";
 
-const codeBlockUID = 'roam-render-todo-progress-cljs';
-const cssBlockUID = 'roam-render-todo-progress-css';
+const componentName = 'Tidy TODOs'
+const codeBlockUID = 'roam-render-tidy-todos-cljs';
+const cssBlockUID = 'roam-render-tidy-todos-css';
 const renderString = `{{[[roam/render]]:((${codeBlockUID}))}}`;
-const replacementString = '{{todo-progress-bar}}';
-const version = 'v11';
-const titleblockUID = 'roam-render-todo-progress';
-const cssBlockParentUID = 'todo-progress-css-parent';
+const replacementString = '{{tidy-todos}}';
+const version = 'v8';
+const titleblockUID = 'roam-render-tidy-todos';
+const cssBlockParentUID = 'tidy-todos-css-parent';
 
 function onload({extensionAPI}) {
   const panelConfig = {
-    tabTitle: "TODO Progress Bar",
+    tabTitle: "Tidy TODOs",
     settings: [
-        {id:		  "strikethrough",
-          name:		"Strikethrough DONE tasks",
-          description: "Adds CSS to strike through DONE tasks",
-          action:	  {type:	 "switch",
-                        onChange: (evt) => { 
-                          // toggleStrikethroughCSS(evt.target.checked); 
-                          console.log("toggle strikethrough CSS!", evt.target.checked); }}}
+        // {id:		  "strikethrough",
+        //   name:		"Strikethrough DONE tasks",
+        //   description: "Adds CSS to strike through DONE tasks",
+        //   action:	  {type:	 "switch",
+        //                 onChange: (evt) => { 
+        //                   // toggleStrikethroughCSS(evt.target.checked); 
+        //                   console.log("toggle strikethrough CSS!", evt.target.checked); }}}
     ]
   };
 
@@ -26,15 +27,15 @@ function onload({extensionAPI}) {
 
   if (!roamAlphaAPI.data.pull("[*]", [":block/uid", titleblockUID])) {
     // component hasn't been loaded so we add it to the graph
-    toggleRenderComponent(true, titleblockUID, cssBlockParentUID, version, renderString, replacementString, cssBlockUID, codeBlockUID)
+    toggleRenderComponent(true, titleblockUID, cssBlockParentUID, version, renderString, replacementString, cssBlockUID, codeBlockUID, componentName)
   }
 
-  console.log("load todo progress bar plugin");
+  console.log(`load ${componentName} plugin`)
 }
 
 function onunload() {
-  console.log("unload todo progress bar plugin");
-  toggleRenderComponent(false, titleblockUID, cssBlockParentUID, version, renderString, replacementString, cssBlockUID, codeBlockUID)
+  console.log(`unload ${componentName} plugin`)
+  toggleRenderComponent(false, titleblockUID, cssBlockParentUID, version, renderString, replacementString, cssBlockUID, codeBlockUID, componentName)
 }
 
 export default {
