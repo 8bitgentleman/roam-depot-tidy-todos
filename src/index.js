@@ -3,7 +3,7 @@ import { toggleRenderComponent } from "./entry-helpers";
 const componentName = 'Tidy TODOs'
 const codeBlockUID = 'roam-render-tidy-todos-cljs';
 const cssBlockUID = 'roam-render-tidy-todos-css';
-const renderString = `{{[[roam/render]]:((${codeBlockUID}))}}`;
+const renderString = `{{[[roam/render]]:((${codeBlockUID}))`;
 const replacementString = '{{tidy-todos}}';
 const version = 'v8';
 const titleblockUID = 'roam-render-tidy-todos';

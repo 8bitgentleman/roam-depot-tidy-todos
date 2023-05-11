@@ -9,7 +9,7 @@ span.rm-page-ref[data-tag="tidy"], span.rm-page-ref[data-tag="tidy"] {
 }
 
 .tidyButton{
-  margin:0 5px 0 -2px !important
+  margin:0 6px 0 -4px !important
 }
 
 .tidyRemoveButton {
@@ -17,7 +17,7 @@ span.rm-page-ref[data-tag="tidy"], span.rm-page-ref[data-tag="tidy"] {
   margin-top: -2px !important;
 }
 
-.tidyButton:hover,  .tidyRemoveButton:hover{
+.tidyButton:hover, .tidyRemoveButton:hover{
   background: transparent !important;
 }
 
