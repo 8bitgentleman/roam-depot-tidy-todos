@@ -20,7 +20,7 @@
 (defn find-blocks-that-ref
   "Returns all _refs for each children block given a parent block uid" 
   [block-uid ref-title]
-  (dr/q '[:find (pull ?node [:block/string :block/uid])
+  (dr/q '[:find (pull ?node [:block/order :block/string :block/uid])
           :in $ ?uid ?ref-page-name
           :where
           [?e :block/uid ?uid]
@@ -41,6 +41,11 @@
                 :order "last"}
      :block {:uid (:block/uid (first item))}}))
 
+(defn sorted-data [data]
+  (->> (deref data)
+       (sort-by #(get-in (first %) [:block/order]))
+  ))
+
 (defn sort-all-todos[parent-uid]
   
   (r/with-let [
@@ -55,8 +60,11 @@
           {:location {:parent-uid parent-uid
                       :order "last"}
            :block {:uid (:block/uid (first item))}}))
+      (print TODOs)
       (concat
-        @TODOs
+        ;;sort TODOs by order not creation date
+        (sorted-data TODOs)
+        ;;sort alphabetically          
         (sort-by-string @DONEs)
         (sort-by-string @ARCHIVEDs)
         )
