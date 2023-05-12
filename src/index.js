@@ -5,7 +5,7 @@ const codeBlockUID = 'roam-render-tidy-todos-cljs';
 const cssBlockUID = 'roam-render-tidy-todos-css';
 const renderString = `{{[[roam/render]]:((${codeBlockUID}))`;
 const replacementString = '{{tidy-todos}}';
-const version = 'v8';
+const version = 'v9';
 const titleblockUID = 'roam-render-tidy-todos';
 const cssBlockParentUID = 'tidy-todos-css-parent';
 
