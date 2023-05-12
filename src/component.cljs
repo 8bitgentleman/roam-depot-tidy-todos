@@ -60,7 +60,6 @@
           {:location {:parent-uid parent-uid
                       :order "last"}
            :block {:uid (:block/uid (first item))}}))
-      (print TODOs)
       (concat
         ;;sort TODOs by order not creation date
         (sorted-data TODOs)
