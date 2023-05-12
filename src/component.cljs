@@ -29,11 +29,27 @@
           [?DONE-Ref :node/title ?ref-page-name]]
     block-uid ref-title))
 
+(defn strip-markdown-syntax [string]
+  ;;strip out roam syntax so that sorting can happen on the actual letters
+  (-> string
+      (str/replace #"\*\*" "") ;;bold
+      (str/replace #"\_\_" "") ;;italic
+      (str/replace #"\^\^" "") ;;highlight
+      (str/replace #"\#" "") ;;tag
+      (str/replace #"\{\{" "") ;;brackets
+      (str/replace #"\}\}" "") ;;brackets 
+      (str/replace #"\~\~" "") ;;highlight
+      (str/replace #"\]\]" "") ;;roam pages 
+      (str/replace #"\[\[" "") ;;roam pages
+    (str/replace #"\[\[[^]]+\]\([^)]+\)" "$1");; markdown links
+    )
+  )
+
 (defn get-string [item]
   (:block/string (first item)))
 
 (defn sort-by-string [data]
-  (sort-by #(str/lower-case (get-string %)) data))
+  (sort-by #(str/lower-case (strip-markdown-syntax (get-string %))) data))
 
 (defn move-to-end [parent-uid item]
   (block/move
@@ -55,7 +71,7 @@
               ]
     (p/run!
       (fn [item]
-        (prn (first item))
+        ;;(prn (first item))
         (block/move
           {:location {:parent-uid parent-uid
                       :order "last"}
@@ -70,6 +86,7 @@
       )
     )
   )
+
 
 ;; functions for removing the tidy
 (defn clean-tidy-string [input-string]
