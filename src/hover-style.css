@@ -1,0 +1,12 @@
+@media screen and (min-width: 600px) {
+    div.rm-block[data-page-links*="roam/render"] button.tidyButton,
+    div.rm-block[data-page-links*="roam/render"] button.tidyRemoveButton {
+        opacity: .25;
+        transition: opacity .25s ease-in-out;
+    }
+
+    div.rm-block[data-page-links*="roam/render"]:hover button.tidyButton,
+    div.rm-block[data-page-links*="roam/render"]:hover button.tidyRemoveButton {
+        opacity: 1;
+    }
+}

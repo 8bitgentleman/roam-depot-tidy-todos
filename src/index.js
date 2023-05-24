@@ -11,7 +11,7 @@ const cssBlockParentUID = 'tidy-todos-css-parent';
 
 function onload({extensionAPI}) {
   const panelConfig = {
-    tabTitle: "Tidy TODOs",
+    tabTitle: componentName,
     settings: [
         // {id:		  "strikethrough",
         //   name:		"Strikethrough DONE tasks",
